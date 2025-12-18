@@ -1,7 +1,10 @@
 ### returns the lines for games for the sport of the user choice
+from dotenv import load_dotenv
 import requests
 import pandas as pd
 import os
+
+load_dotenv()
 
 # Access the secret
 api_key = os.getenv('ODDS_API')
@@ -23,6 +26,7 @@ def get_odds(sport="americanfootball_nfl",region="us", markets = "totals"):
     json_data = response.json()
     lines = pd.DataFrame(data=json_data)
     lines = lines.sort_values(by=["commence_time"])
+    return lines
 
 def process_odds(lines, type="totals"):
     for index, row in lines.iterrows():
@@ -43,6 +47,7 @@ def process_odds(lines, type="totals"):
                 bet_two_odds = book_lines[1]['price']
 
                 if type != "ml":
+                    print(book_lines[0])
                     bet_one_line = book_lines[0]['point']
                     bet_two_line = book_lines[1]['point']
 
@@ -125,9 +130,10 @@ def get_in_season_sports():
 
 
 def user_selection_odds():
-
-    selection = input("Please input user sport:")
     in_season_sports = get_in_season_sports()
+    print(in_season_sports)
+    selection = input("Please input user sport:")
+    
     if selection not in in_season_sports:
         print("Error: Sport is not in season")
     #sportsbook_selection = input("sportsbook_selection")
@@ -137,34 +143,34 @@ def user_selection_odds():
     ml_odds = get_odds(sport = selection, markets = "h2h")
 
     totals = process_odds(totals_odds, "totals")
-    spreads = process_odds(spreads_odds, "totals")
-    ml = process_odds(ml_odds, "totals")
+    spreads = process_odds(spreads_odds, "spreads")
+    ml = process_odds(ml_odds, "ml")
 
     #rename columns to match subject
-    spreads[["one_sportsbook", "one_line", "one_odds", "two_sportsbook", "two_line", "two_odds"]].rename([
-        'away_spread_book',
-        'away_spread'
-        'away_odds',
-        'home_spread_book',
-        'home_spread',
-        'home_odds'
-    ],inplace=True)
+    spreads = spreads.rename(columns={
+        "one_sportsbook": "away_spread_book",
+        "one_line": "away_spread",
+        "one_odds": "away_odds",
+        "two_sportsbook": "home_spread_book",
+        "two_line": "home_spread",
+        "two_odds": "home_odds",
+    })
+    
+    totals = totals.rename(columns={
+        "one_sportsbook": "over_book",
+        "one_line": "over_total",
+        "one_odds": "over_odds",
+        "two_sportsbook": "under_book",
+        "two_line": "under_total",
+        "two_odds": "under_odds",
+    })
 
-    totals[["one_sportsbook", "one_line", "one_odds", "two_sportsbook", "two_line", "two_odds"]].rename([
-        'over_book',
-        'over_total'
-        'over_odds',
-        'under_book',
-        'under_total',
-        'under_odds'
-    ],inplace=True)
-
-    ml[["one_sportsbook", "one_line", "one_odds", "two_sportsbook", "two_line", "two_odds"]].rename([
-        'away_ml_book',
-        'away_ml_odds',
-        'home_ml_book',
-        'home_ml_odds'
-    ],inplace=True)
+    ml = ml.rename(columns={
+        "one_sportsbook": "away_ml_book",
+        "one_odds": "away_ml_odds",
+        "two_sportsbook": "home_ml_book",
+        "two_odds": "home_ml_odds",
+    })
 
     
     totals_to_add = totals[['id', 'over_book', 'over_total','over_odds', 'under_book', 'under_total', 'under_odds']]
@@ -181,3 +187,6 @@ def user_selection_odds():
     )
     return game_lines
 
+
+df = user_selection_odds()
+print(df)
