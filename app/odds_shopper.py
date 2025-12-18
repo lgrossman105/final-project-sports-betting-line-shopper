@@ -47,7 +47,6 @@ def process_odds(lines, type="totals"):
                 bet_two_odds = book_lines[1]['price']
 
                 if type != "ml":
-                    print(book_lines[0])
                     bet_one_line = book_lines[0]['point']
                     bet_two_line = book_lines[1]['point']
 

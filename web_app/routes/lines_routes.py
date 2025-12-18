@@ -1,5 +1,5 @@
 
-# this is the "web_app/routes/stocks_routes.py" file ...
+# this is the "web_app/routes/lines_routes.py" file ...
 
 from flask import Blueprint, request, render_template, redirect, flash
 
@@ -8,15 +8,14 @@ from app.odds_shopper import get_in_season_sports, get_sport_odds
 lines_routes = Blueprint("lines_routes", __name__)
 
 @lines_routes.route("/lines/form")
-def stocks_form():
+def lines_form():
     print("Betting Lines Form...")
 
     sports = get_in_season_sports()
-    print(sports)
 
     return render_template("lines_form.html", sports = sports)
 
-# /stocks/dashboard?symbol=SPOT
+# /lines/dashboard?sport=americanfootball_nfl
 @lines_routes.route("/lines/dashboard", methods=["GET", "POST"])
 def lines_dashboard():
     print("LINES DASHBOARD...")
@@ -32,33 +31,29 @@ def lines_dashboard():
 
     sports = get_in_season_sports()
     sport_name = request_data.get("symbol")
-    sport = sports[[sports['title']==sport_name]]['key']
+    print(sport_name)
+    sport = next((s["key"] for s in sports if s["title"] == sport_name), None)
 
     try:
-        df = get_sport_odds(sport_name)
-        latest_close_usd = format_usd(df.iloc[0]["adjusted_close"])
-        latest_date = df.iloc[0]["timestamp"]
-        data = df.to_dict("records")
+        df = get_sport_odds(sport)
 
-        flash("Fetched Real-time Market Data!", "success")
-        return render_template("stocks_dashboard.html",
-            symbol=symbol,
-            latest_close_usd=latest_close_usd,
-            latest_date=latest_date,
-            data=data
+        flash("Fetched Real-time Odds Data!", "success")
+        return render_template("lines_dashboard.html",
+            data=df,
+            sport=sport_name
         )
     except Exception as err:
         print('OOPS', err)
 
-        flash("Market Data Error. Please check your symbol and try again!", "danger")
-        return redirect("/stocks/form")
+        flash("Odds Data Error. Please try again!", "danger")
+        return redirect("/lines/form")
 
 #
 # API ROUTES
 #
 
 # /api/stocks.json?symbol=SPOT
-@lines_routes.route("/api/stocks.json")
+'''@lines_routes.route("/api/stocks.json")
 def stocks_api():
     print("STOCKS DATA (API)...")
 
@@ -73,4 +68,4 @@ def stocks_api():
         return {"symbol": symbol, "data": data }
     except Exception as err:
         print('OOPS', err)
-        return {"message":"Market Data Error. Please try again."}, 404
+        return {"message":"Market Data Error. Please try again."}, 404'''
