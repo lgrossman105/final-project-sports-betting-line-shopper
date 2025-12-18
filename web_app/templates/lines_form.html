@@ -1,0 +1,22 @@
+{% extends "bootstrap_5_layout.html" %}
+{% set active_page = "about" %}
+
+{% block content %}
+
+    <h2>Pick a sport</h2>
+
+    <p>Make a selection to see the best available lines </p>
+
+    <form action="/lines/dashboard" method="POST">
+
+        <label>Sport:</label>
+        <select name="symbol" class="form-select">
+        {% for sport in sports %}
+            <option value="{{ sport.title }}">{{ sport.title }}</option>
+        {% endfor %}
+        </select>
+
+        <button class="btn btn-success">Submit</button>
+    </form>
+
+{% endblock %}
