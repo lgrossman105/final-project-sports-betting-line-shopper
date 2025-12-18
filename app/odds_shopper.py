@@ -16,7 +16,7 @@ def get_odds(sport="americanfootball_nfl",region="us", markets = "totals"):
     params = {
         "apiKey": api_key,
         "regions": region,
-        "markets": {markets},
+        "markets": markets,
         "oddsFormat": "american",
         "dateFormat": "iso"
     }
