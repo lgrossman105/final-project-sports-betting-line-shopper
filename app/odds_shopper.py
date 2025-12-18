@@ -16,7 +16,7 @@ def get_odds(sport="americanfootball_nfl",region="us", markets = "totals"):
     params = {
         "apiKey": api_key,
         "regions": region,
-        "markets": {markets},
+        "markets": markets,
         "oddsFormat": "american",
         "dateFormat": "iso"
     }
@@ -123,7 +123,7 @@ def get_in_season_sports():
 
     data = response.json()
 
-    sports = [{"key": s["key"], "title": s["title"]} for s in data if s.get("active")]
+    sports = [{"key": s["key"], "title": s["title"]} for s in data if isinstance(s, dict) and s.get("active")]
 
     return sports
 

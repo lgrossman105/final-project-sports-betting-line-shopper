@@ -16,7 +16,7 @@ def lines_form():
     return render_template("lines_form.html", sports = sports)
 
 # /lines/dashboard?sport=americanfootball_nfl
-@lines_routes.route("/lines", methods=["GET", "POST"])
+@lines_routes.route("/lines/dashboard", methods=["GET", "POST"])
 def lines_dashboard():
     print("LINES DASHBOARD...")
 
