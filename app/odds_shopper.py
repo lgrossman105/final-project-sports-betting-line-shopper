@@ -123,7 +123,7 @@ def get_in_season_sports():
 
     data = response.json()
 
-    sports = [{"key": s["key"], "title": s["title"]} for s in data if s.get("active")]
+    sports = [{"key": s["key"], "title": s["title"]} for s in data if isinstance(s, dict) and s.get("active")]
 
     return sports
 
