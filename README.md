@@ -13,6 +13,9 @@ conda create -n betting-env python=3.11
 conda activate betting-en
 ```
 
+## Create csv file of available sports - available_sports.csv
+This file represents the list of available sports with both the title and key from the Odds api
+
 ## Clone repo and download it from github. Navigate to repo from commandline: here's an example
 cd ~/Users/alexanderbotticelli/Documents/GitHub
 
