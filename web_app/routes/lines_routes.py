@@ -3,7 +3,8 @@
 
 from flask import Blueprint, request, render_template, redirect, flash
 
-from app.odds_shopper import get_in_season_sports, get_sport_odds
+from app.odds_shopper import get_active_sports, get_sport_odds
+import pandas as pd
 
 lines_routes = Blueprint("lines_routes", __name__)
 
@@ -11,7 +12,7 @@ lines_routes = Blueprint("lines_routes", __name__)
 def lines_form():
     print("Betting Lines Form...")
 
-    sports = get_in_season_sports()
+    sports = get_active_sports()
 
     return render_template("lines_form.html", sports = sports)
 
@@ -29,7 +30,7 @@ def lines_dashboard():
         request_data = dict(request.args)
         print("URL PARAMS:", request_data)
 
-    sports = get_in_season_sports()
+    sports = get_active_sports()
     sport_name = request_data.get("symbol")
     print(sport_name)
     sport = next((s["key"] for s in sports if s["title"] == sport_name), None)

@@ -127,6 +127,16 @@ def get_in_season_sports():
 
     return sports
 
+def get_active_sports():
+
+    base_dir = os.path.dirname(__file__) 
+    csv_path = os.path.join(base_dir, "..", "available_sports.csv")
+
+    df = pd.read_csv(csv_path)
+
+    return df.to_dict(orient="records")
+
+
 
 def get_sport_odds(selection="americanfootball)_nfl"):
 
